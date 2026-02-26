@@ -22,6 +22,7 @@
 		"shared": "workspace:*"
 	},
 	"devDependencies": {
+		"@biomejs/biome": "2.4.4",
 		"@types/bun": "latest"
 	}
 }

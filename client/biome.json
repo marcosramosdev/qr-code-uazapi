@@ -6,7 +6,7 @@
 		"useIgnoreFile": true
 	},
 	"files": {
-		"ignoreUnknown": false
+		"includes": ["**", "!!**/dist"]
 	},
 	"formatter": {
 		"enabled": true,
@@ -15,21 +15,14 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"recommended": true,
-			"correctness": {
-				"noUnusedVariables": "off"
-			}
+			"recommended": true
 		}
 	},
 	"javascript": {
 		"formatter": {
-			"quoteStyle": "single",
-			"lineEnding": "auto",
-			"semicolons": "asNeeded",
-			"attributePosition": "auto"
+			"quoteStyle": "double"
 		}
 	},
-
 	"assist": {
 		"enabled": true,
 		"actions": {
