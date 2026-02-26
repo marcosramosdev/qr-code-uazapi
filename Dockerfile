@@ -1,30 +1,33 @@
-FROM oven/bun:1 AS base
+FROM oven/bun:1 AS builder
 WORKDIR /app
 
-# ── dependências ────────────────────────────────────────────────────────────
-FROM base AS deps
-COPY package.json bun.lock ./
-COPY client/package.json ./client/
-COPY server/package.json ./server/
-COPY shared/package.json ./shared/
-RUN bun install --frozen-lockfile
-
-# ── build ────────────────────────────────────────────────────────────────────
-FROM deps AS builder
+# Copia tudo (turbo.json precisa estar disponível para o postinstall)
 COPY . .
+
+# Instala dependências e compila tudo
+RUN bun install
 RUN bun run build:single
 
-# ── imagem final (apenas o necessário) ───────────────────────────────────────
+# ── imagem final mínima ──────────────────────────────────────────────────────
 FROM oven/bun:1-slim AS runner
 WORKDIR /app
 
+# Artefatos do servidor compilado
 COPY --from=builder /app/server/dist ./server/dist
+
+# Frontend compilado servido como estático
 COPY --from=builder /app/server/static ./server/static
-COPY --from=builder /app/server/package.json ./server/package.json
+
+# Dependências do workspace (hono, shared, etc ficam aqui)
 COPY --from=builder /app/node_modules ./node_modules
+
+# Package.json necessários para resolução de módulos
 COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/server/package.json ./server/package.json
 
 ENV NODE_ENV=production
 EXPOSE 3000
 
-CMD ["bun", "run", "server/dist/index.js"]
+# Roda a partir do diretório server, igual ao start:single
+WORKDIR /app/server
+CMD ["bun", "run", "dist/index.js"]
