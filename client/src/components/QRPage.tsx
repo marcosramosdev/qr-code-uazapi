@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router'
 
 type ConnectResponse = {
@@ -61,19 +61,23 @@ function QRPage() {
 	const [refreshing, setRefreshing] = useState(false)
 
 	const statusIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
-	const countdownIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+	const countdownIntervalRef = useRef<ReturnType<typeof setInterval> | null>(
+		null,
+	)
 	const qrTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
 	const stopAll = useCallback(() => {
 		if (statusIntervalRef.current) clearInterval(statusIntervalRef.current)
-		if (countdownIntervalRef.current) clearInterval(countdownIntervalRef.current)
+		if (countdownIntervalRef.current)
+			clearInterval(countdownIntervalRef.current)
 		if (qrTimerRef.current) clearTimeout(qrTimerRef.current)
 	}, [])
 
 	useEffect(() => () => stopAll(), [stopAll])
 
 	const startCountdown = useCallback(() => {
-		if (countdownIntervalRef.current) clearInterval(countdownIntervalRef.current)
+		if (countdownIntervalRef.current)
+			clearInterval(countdownIntervalRef.current)
 		if (qrTimerRef.current) clearTimeout(qrTimerRef.current)
 
 		setCountdown(QR_LIFETIME_S)
@@ -147,7 +151,9 @@ function QRPage() {
 			startCountdown()
 		} catch {
 			stopAll()
-			setErrorMsg('Erro de rede ao comunicar com o servidor. Verifique sua conexão e tente novamente.')
+			setErrorMsg(
+				'Erro de rede ao comunicar com o servidor. Verifique sua conexão e tente novamente.',
+			)
 			setPhase('error')
 		}
 	}, [token, subdomain, stopAll, startCountdown])
@@ -195,12 +201,22 @@ function QRPage() {
 
 	if (!token || !subdomain) {
 		return (
-			<div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
+			<div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
 				<div className="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-8 max-w-sm w-full flex flex-col items-center gap-4 text-center">
 					<div className="w-14 h-14 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center">
-						<svg className="w-7 h-7 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+						<svg
+							className="w-7 h-7 text-red-400"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+							strokeWidth={2}
+						>
 							<title>Link inválido</title>
-							<path strokeLinecap="round" strokeLinejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+							/>
 						</svg>
 					</div>
 					<div>
@@ -218,9 +234,8 @@ function QRPage() {
 	// ── layout base ────────────────────────────────────────────────────────
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
+		<div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
 			<div className="w-full max-w-sm flex flex-col items-center">
-
 				{/* Header — oculto na tela de conectado e erro */}
 				{phase !== 'connected' && phase !== 'error' && (
 					<div className="text-center mb-8">
@@ -238,14 +253,17 @@ function QRPage() {
 
 				{/* Card */}
 				<div className="w-full bg-slate-800/50 backdrop-blur border border-slate-700/50 rounded-2xl p-6 shadow-2xl">
-
 					{/* ── LOADING inicial ───────────────────────────────────── */}
 					{phase === 'loading' && (
 						<div className="flex flex-col items-center justify-center py-14 gap-5">
 							<Spinner className="w-12 h-12" />
 							<div className="text-center">
-								<p className="text-slate-300 text-sm font-medium">Gerando QR Code...</p>
-								<p className="text-slate-500 text-xs mt-1">Conectando à uazapi</p>
+								<p className="text-slate-300 text-sm font-medium">
+									Gerando QR Code...
+								</p>
+								<p className="text-slate-500 text-xs mt-1">
+									Conectando à uazapi
+								</p>
 							</div>
 						</div>
 					)}
@@ -253,11 +271,12 @@ function QRPage() {
 					{/* ── QR CODE ───────────────────────────────────────────── */}
 					{(phase === 'qr' || phase === 'scanning') && (
 						<div className="flex flex-col items-center gap-5">
-
 							{/* Imagem do QR */}
 							<div className="relative">
 								{/* blur quando expirado ou renovando */}
-								<div className={`bg-white p-3 rounded-2xl shadow-lg transition-all duration-300 ${expired || refreshing ? 'opacity-20 blur-sm' : 'opacity-100'}`}>
+								<div
+									className={`bg-white p-3 rounded-2xl shadow-lg transition-all duration-300 ${expired || refreshing ? 'opacity-20 blur-sm' : 'opacity-100'}`}
+								>
 									{qrBase64 ? (
 										<img
 											src={qrBase64}
@@ -274,7 +293,9 @@ function QRPage() {
 								{refreshing && (
 									<div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
 										<Spinner className="w-10 h-10" />
-										<p className="text-slate-300 text-xs font-medium">Renovando...</p>
+										<p className="text-slate-300 text-xs font-medium">
+											Renovando...
+										</p>
 									</div>
 								)}
 
@@ -282,19 +303,41 @@ function QRPage() {
 								{expired && !refreshing && (
 									<div className="absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-2xl">
 										<div className="bg-slate-900/80 backdrop-blur-sm rounded-2xl px-5 py-4 flex flex-col items-center gap-3">
-											<svg className="w-6 h-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+											<svg
+												className="w-6 h-6 text-yellow-400"
+												fill="none"
+												viewBox="0 0 24 24"
+												stroke="currentColor"
+												strokeWidth={2}
+											>
 												<title>Expirado</title>
-												<path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+												<path
+													strokeLinecap="round"
+													strokeLinejoin="round"
+													d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+												/>
 											</svg>
-											<p className="text-white text-sm font-semibold">QR Code expirado</p>
+											<p className="text-white text-sm font-semibold">
+												QR Code expirado
+											</p>
 											<button
 												type="button"
 												onClick={handleRefresh}
 												className="bg-green-500 hover:bg-green-400 active:bg-green-600 text-white text-sm font-semibold px-5 py-2 rounded-xl transition-colors flex items-center gap-2"
 											>
-												<svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+												<svg
+													className="w-4 h-4"
+													fill="none"
+													viewBox="0 0 24 24"
+													stroke="currentColor"
+													strokeWidth={2.5}
+												>
 													<title>Renovar</title>
-													<path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+													<path
+														strokeLinecap="round"
+														strokeLinejoin="round"
+														d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+													/>
 												</svg>
 												Gerar novo QR Code
 											</button>
@@ -307,9 +350,13 @@ function QRPage() {
 									<div className="absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-2xl">
 										<div className="bg-slate-900/80 backdrop-blur-sm rounded-2xl px-5 py-4 flex flex-col items-center gap-3">
 											<Spinner className="w-8 h-8" />
-											<p className="text-white text-sm font-semibold">Conectando...</p>
+											<p className="text-white text-sm font-semibold">
+												Conectando...
+											</p>
 											<p className="text-slate-400 text-xs text-center">
-												QR Code lido. Aguarde enquanto<br />sua conta é vinculada.
+												QR Code lido. Aguarde enquanto
+												<br />
+												sua conta é vinculada.
 											</p>
 										</div>
 									</div>
@@ -319,13 +366,25 @@ function QRPage() {
 							{/* Countdown — só quando ativo */}
 							{!expired && !refreshing && phase !== 'scanning' && (
 								<div className="flex items-center gap-2 text-xs">
-									<svg className="w-3.5 h-3.5 text-slate-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+									<svg
+										className="w-3.5 h-3.5 text-slate-500 shrink-0"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke="currentColor"
+										strokeWidth={2}
+									>
 										<title>Tempo restante</title>
-										<path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+										/>
 									</svg>
 									<span className="text-slate-500">
 										Expira em{' '}
-										<span className={`font-mono font-semibold tabular-nums ${countdown <= 30 ? 'text-yellow-400' : 'text-slate-400'}`}>
+										<span
+											className={`font-mono font-semibold tabular-nums ${countdown <= 30 ? 'text-yellow-400' : 'text-slate-400'}`}
+										>
 											{formatCountdown(countdown)}
 										</span>
 									</span>
@@ -337,19 +396,38 @@ function QRPage() {
 								<>
 									<div className="w-full border-t border-slate-700/50" />
 									<div className="text-center">
-										<p className="text-slate-300 text-sm font-medium mb-2">Como escanear:</p>
+										<p className="text-slate-300 text-sm font-medium mb-2">
+											Como escanear:
+										</p>
 										<ol className="text-slate-500 text-xs space-y-1 text-left list-none">
 											<li className="flex items-start gap-2">
-												<span className="text-green-400 font-bold shrink-0">1.</span>
-												Abra o <span className="text-slate-400 font-medium">&nbsp;WhatsApp&nbsp;</span> no celular
+												<span className="text-green-400 font-bold shrink-0">
+													1.
+												</span>
+												Abra o{' '}
+												<span className="text-slate-400 font-medium">
+													&nbsp;WhatsApp&nbsp;
+												</span>{' '}
+												no celular
 											</li>
 											<li className="flex items-start gap-2">
-												<span className="text-green-400 font-bold shrink-0">2.</span>
-												Vá em <span className="text-slate-400 font-medium">&nbsp;Configurações → Aparelhos conectados</span>
+												<span className="text-green-400 font-bold shrink-0">
+													2.
+												</span>
+												Vá em{' '}
+												<span className="text-slate-400 font-medium">
+													&nbsp;Configurações → Aparelhos conectados
+												</span>
 											</li>
 											<li className="flex items-start gap-2">
-												<span className="text-green-400 font-bold shrink-0">3.</span>
-												Toque em <span className="text-slate-400 font-medium">&nbsp;Conectar aparelho</span> e aponte para o QR
+												<span className="text-green-400 font-bold shrink-0">
+													3.
+												</span>
+												Toque em{' '}
+												<span className="text-slate-400 font-medium">
+													&nbsp;Conectar aparelho
+												</span>{' '}
+												e aponte para o QR
 											</li>
 										</ol>
 									</div>
@@ -373,9 +451,19 @@ function QRPage() {
 							{/* ícone animado */}
 							<div className="relative">
 								<div className="w-20 h-20 rounded-full bg-green-500/15 border-2 border-green-500/40 flex items-center justify-center">
-									<svg className="w-10 h-10 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+									<svg
+										className="w-10 h-10 text-green-400"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke="currentColor"
+										strokeWidth={2.5}
+									>
 										<title>Conectado</title>
-										<path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											d="M5 13l4 4L19 7"
+										/>
 									</svg>
 								</div>
 								<span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-green-400 border-2 border-slate-800 animate-ping opacity-60" />
@@ -383,9 +471,12 @@ function QRPage() {
 							</div>
 
 							<div className="text-center">
-								<p className="text-white font-bold text-xl">WhatsApp conectado!</p>
+								<p className="text-white font-bold text-xl">
+									WhatsApp conectado!
+								</p>
 								<p className="text-slate-400 text-sm mt-2 leading-relaxed">
-									Sua conta foi vinculada com sucesso.<br />
+									Sua conta foi vinculada com sucesso.
+									<br />
 									Você já pode fechar esta página.
 								</p>
 							</div>
@@ -397,15 +488,27 @@ function QRPage() {
 					{/* ── ERRO ──────────────────────────────────────────────── */}
 					{phase === 'error' && (
 						<div className="flex flex-col items-center gap-5 py-8">
-							<div className="w-18 h-18 w-16 h-16 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center">
-								<svg className="w-8 h-8 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+							<div className="md:w-18 md:h-18 w-16 h-16 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center">
+								<svg
+									className="w-8 h-8 text-red-400"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+									strokeWidth={1.8}
+								>
 									<title>Erro</title>
-									<path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
+									/>
 								</svg>
 							</div>
 
 							<div className="text-center">
-								<p className="text-white font-semibold text-base">Não foi possível gerar o QR Code</p>
+								<p className="text-white font-semibold text-base">
+									Não foi possível gerar o QR Code
+								</p>
 								<p className="text-slate-400 text-sm mt-2 leading-relaxed max-w-xs mx-auto">
 									{errorMsg}
 								</p>
@@ -416,9 +519,19 @@ function QRPage() {
 								onClick={handleRetry}
 								className="bg-slate-700 hover:bg-slate-600 active:bg-slate-500 text-slate-100 text-sm font-semibold px-6 py-2.5 rounded-xl transition-colors flex items-center gap-2"
 							>
-								<svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+								<svg
+									className="w-4 h-4"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+									strokeWidth={2.5}
+								>
 									<title>Tentar novamente</title>
-									<path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+									/>
 								</svg>
 								Tentar novamente
 							</button>
