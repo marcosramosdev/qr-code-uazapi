@@ -182,3 +182,12 @@ export const app = new Hono()
 	})
 
 export default app
+
+// Inicia o servidor HTTP quando executado diretamente
+const port = Number(process.env.PORT) || 8080
+
+Bun.serve({
+	fetch: app.fetch,
+	port,
+	hostname: '0.0.0.0',
+})
