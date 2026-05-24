@@ -1,20 +1,54 @@
 schema: spec-driven
 
-# Project context (optional)
-# This is shown to AI when creating artifacts.
-# Add your tech stack, conventions, style guides, domain knowledge, etc.
-# Example:
-#   context: |
-#     Tech stack: TypeScript, React, Node.js
-#     We use conventional commits
-#     Domain: e-commerce platform
+# Project context — shown to AI when creating artifacts.
+context: |
+  Projeto: qr-code-uazapi — integra WhatsApp via API uazapi (gera QR code de conexão)
+  e provisiona stack de CRM por cliente (Supabase + uazapi + webhook + workflow n8n →
+  página de CRM no Notion alimentada por mensagens do WhatsApp).
 
-# Per-artifact rules (optional)
-# Add custom rules for specific artifacts.
-# Example:
-#   rules:
-#     proposal:
-#       - Keep proposals under 500 words
-#       - Always include a "Non-goals" section
-#     tasks:
-#       - Break tasks into chunks of max 2 hours
+  Arquitetura: monorepo Bun com workspaces, orquestrado por Turbo.
+    - server/  → backend Hono (TypeScript), API em server/src/index.ts (rotas /api/*)
+    - client/  → frontend React 19 + Vite + Tailwind CSS v4
+    - shared/  → tipos TypeScript compartilhados (shared/src/types/index.ts)
+  Path aliases: @server/*, @client/*, @shared/*.
+
+  Stack: Bun (runtime + package manager), Hono, React 19, Vite 6, TypeScript 5,
+  Tailwind CSS v4, TanStack React Query v5, React Router v7, Biome (lint + format).
+  Deploy: Docker → Fly.io (região gru). Server lê porta de process.env.PORT (default 8080).
+
+  Convenções de código:
+    - Chamadas HTTP usam fetch nativo (sem axios). Sem SDKs externos quando REST resolve.
+    - Formulários React: useState + validação HTML5 (sem zod / react-hook-form).
+    - Estilo: Tailwind utility classes, tema dark (slate-900/slate-800), sem arquivos CSS.
+    - Tipos de request/response ficam em shared/src/types e são reusados client+server.
+    - Rotas de API no padrão Hono .get('/api/...') / .post('/api/...'); response JSON
+      com flag `success` boolean.
+    - Frontend chama /api/* (proxy do Vite → server em dev).
+
+  Segurança:
+    - Segredos (tokens uazapi/admintoken, N8N_API_KEY, Supabase service role) ficam
+      SOMENTE no servidor, lidos via process.env. Nunca no client.
+    - NÃO prefixar segredos com VITE_ (vazaria para o bundle do client).
+    - Env do server declaradas em turbo.json e documentadas em .env.example.
+
+  Integrações externas: uazapi (instância, webhook, connect/QR), n8n (API pública
+  /api/v1/workflows — schema estrito no create), Supabase (REST /rest/v1).
+
+# Per-artifact rules — custom constraints applied when generating each artifact.
+rules:
+  proposal:
+    - Escrever em português (termos técnicos e identificadores de código em inglês).
+    - Sempre listar capabilities em kebab-case na seção Capabilities.
+    - Marcar mudanças incompatíveis com **BREAKING**.
+  design:
+    - Incluir seção Non-Goals explícita.
+    - Para cada decisão técnica, registrar a alternativa considerada e o porquê.
+    - Listar riscos no formato [Risco] → Mitigação.
+    - Apontar onde reusar padrões/utilitários existentes em vez de criar novos.
+  specs:
+    - Usar SHALL/MUST (evitar should/may); scenarios com exatamente 4 hashtags (####).
+    - Cada requisito com ao menos um scenario testável (WHEN/THEN).
+  tasks:
+    - Agrupar tasks por fases verificáveis, ordenadas por dependência.
+    - Cada fase termina com uma verificação concreta (rodar app, checar painel, teste).
+    - Tasks pequenas o suficiente para uma sessão; formato checkbox `- [ ] N.N`.

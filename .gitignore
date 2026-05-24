@@ -11,6 +11,10 @@ coverage
 dist
 build
 
+# compiled TS output in source dirs
+server/src/**/*.js
+server/src/**/*.d.ts
+
 # misc
 .DS_Store
 .env
