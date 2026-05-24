@@ -19,7 +19,17 @@
 				"index.html"
 			],
 			"outputs": ["dist/**", "build/**", ".turbo/**"],
-			"env": ["NODE_ENV", "VITE_*"]
+			"env": [
+				"NODE_ENV",
+				"VITE_*",
+				"SUPABASE_URL",
+				"SUPABASE_SERVICE_ROLE_KEY",
+				"UAZAPI_BASE_URL",
+				"UAZAPI_ADMIN_TOKEN",
+				"N8N_BASE_URL",
+				"N8N_API_KEY",
+				"N8N_WEBHOOK_BASE"
+			]
 		},
 		"dev": {
 			"cache": false,
@@ -34,7 +44,18 @@
 				"vite.config.ts",
 				"package.json"
 			],
-			"env": ["NODE_ENV", "PORT", "VITE_*"]
+			"env": [
+				"NODE_ENV",
+				"PORT",
+				"VITE_*",
+				"SUPABASE_URL",
+				"SUPABASE_SERVICE_ROLE_KEY",
+				"UAZAPI_BASE_URL",
+				"UAZAPI_ADMIN_TOKEN",
+				"N8N_BASE_URL",
+				"N8N_API_KEY",
+				"N8N_WEBHOOK_BASE"
+			]
 		},
 		"lint": {
 			"dependsOn": ["^build"],
