@@ -274,6 +274,10 @@ export const rawCrmWorkflow: WorkflowObject = {
               fieldId: "nome",
               fieldValue: "={{ $('Edit Fields').item.json.nome_contato }}",
             },
+            {
+              fieldId: "url_pagina",
+              fieldValue: "={{ $json.url }}",
+            },
           ],
         },
       },
@@ -281,6 +285,38 @@ export const rawCrmWorkflow: WorkflowObject = {
         supabaseApi: {
           id: "8vVOhI6iOPkKPixq",
           name: "Supabase Effect",
+        },
+      },
+    },
+    {
+      id: "d28fcdad-f5e9-4b65-99c9-fa77a4c74652",
+      name: "ultima interação",
+      type: "n8n-nodes-base.notion",
+      typeVersion: 2.2,
+      position: [1392, -96],
+      parameters: {
+        resource: "databasePage",
+        operation: "update",
+        pageId: {
+          __rl: true,
+          value: "={{ $('get contato').item.json.url_pagina }}",
+          mode: "url",
+        },
+        propertiesUi: {
+          propertyValues: [
+            {
+              key: "Ultima interação|date",
+              date: "={{ $now }}",
+              timezone: "America/Sao_Paulo",
+            },
+          ],
+        },
+        options: {},
+      },
+      credentials: {
+        notionApi: {
+          id: "AnAuP6NfVmxGBXEx",
+          name: "Notion Effect",
         },
       },
     },
@@ -332,7 +368,13 @@ export const rawCrmWorkflow: WorkflowObject = {
     },
     If: {
       main: [
-        [],
+        [
+          {
+            node: "ultima interação",
+            type: "main",
+            index: 0,
+          },
+        ],
         [
           {
             node: "Create a database page",
