@@ -113,7 +113,7 @@ export const rawCrmWorkflow: WorkflowObject = {
               id: "8a126a59-4d6b-4c8d-87b5-455ed3eb96c7",
               name: "nome_contato",
               value:
-                "={{ $json.body.chat.wa_contactName || $json.body.message.senderName}}",
+                "={{$json.body.chat.wa_contactName || $json.body.chat.wa_name || ''}}",
               type: "string",
             },
           ],
