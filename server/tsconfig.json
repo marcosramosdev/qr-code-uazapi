@@ -12,6 +12,8 @@
     "types": ["bun-types"],
 
     // Output settings
+    "outDir": "./dist",
+    "rootDir": "./src",
     "declaration": true,
     "noEmit": false,
     "emitDecoratorMetadata": true,
