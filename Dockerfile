@@ -16,5 +16,5 @@ RUN bun install
 # Build for single origin
 RUN bun run build:single
  
-EXPOSE 3000
+EXPOSE 8080
 CMD ["bun", "run", "start:single"]
