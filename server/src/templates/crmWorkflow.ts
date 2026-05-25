@@ -224,7 +224,7 @@ export const rawCrmWorkflow: WorkflowObject = {
         propertiesUi: {
           propertyValues: [
             {
-              key: "Contato|phone_number",
+              key: "Contato|rich_text",
               phoneValue: "={{ $('Edit Fields').item.json.numero_contato }}",
             },
             {
