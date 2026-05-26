@@ -106,7 +106,7 @@ export const rawCrmWorkflow: WorkflowObject = {
             {
               id: "71a0b58b-0fae-45ad-aeb9-899b6b2cd71d",
               name: "mensagem",
-              value: "={{ $json.body.message.content }}",
+              value: "={{ $json.body.message.content.text || '' }}",
               type: "string",
             },
             {
@@ -220,7 +220,7 @@ export const rawCrmWorkflow: WorkflowObject = {
           value: "={{ $('get conta').item.json.link_crm_notion }}",
           mode: "url",
         },
-        title: '={{ $(\'Edit Fields\').item.json.nome_contato || "" }}',
+        title: "={{ $('Edit Fields').item.json.nome_contato || \"\" }}",
         propertiesUi: {
           propertyValues: [
             {
@@ -272,7 +272,8 @@ export const rawCrmWorkflow: WorkflowObject = {
             },
             {
               key: "Origem|select",
-              selectValue: '={{ $json.tracking_is_meta_ads ? "Marketing" : "" }}',
+              selectValue:
+                '={{ $json.tracking_is_meta_ads ? "Marketing" : "" }}',
             },
           ],
         },
@@ -366,14 +367,14 @@ export const rawCrmWorkflow: WorkflowObject = {
               id: "aac4d1ac-0a28-434a-bc4a-e3e69d6eed63",
               name: "tracking_source",
               value:
-                '={{ $(\'Webhook\').item.json.body.message.content.contextInfo.conversionSource || "" }}',
+                "={{ $('Webhook').item.json.body.message.content.contextInfo.conversionSource || \"\" }}",
               type: "string",
             },
             {
               id: "82e562c7-8fcc-46ee-ad7d-5a00d46318dd",
               name: "tracking_entry_point",
               value:
-                '={{ $(\'Webhook\').item.json.body.message.content.contextInfo.entryPointConversionSource || "" }}',
+                "={{ $('Webhook').item.json.body.message.content.contextInfo.entryPointConversionSource || \"\" }}",
               type: "string",
             },
             {
@@ -394,14 +395,14 @@ export const rawCrmWorkflow: WorkflowObject = {
               id: "35d6e327-3f05-44c1-ac47-d7cb324bb0a2",
               name: "tracking_ad_url",
               value:
-                '={{ $(\'Webhook\').item.json.body.message.content.contextInfo.externalAdReply.sourceURL || "" }}',
+                "={{ $('Webhook').item.json.body.message.content.contextInfo.externalAdReply.sourceURL || \"\" }}",
               type: "string",
             },
             {
               id: "95da9e5f-bb7e-49be-afd8-dbb1618d3f59",
               name: "tracking_ad_title",
               value:
-                '={{ $(\'Webhook\').item.json.body.message.content.contextInfo.externalAdReply.title || "" }}',
+                "={{ $('Webhook').item.json.body.message.content.contextInfo.externalAdReply.title || \"\" }}",
               type: "string",
             },
             {
