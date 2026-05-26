@@ -212,7 +212,7 @@ export const rawCrmWorkflow: WorkflowObject = {
       name: "Create a database page",
       type: "n8n-nodes-base.notion",
       typeVersion: 2.2,
-      position: [1392, 112],
+      position: [1648, 128],
       parameters: {
         resource: "databasePage",
         databaseId: {
@@ -220,7 +220,7 @@ export const rawCrmWorkflow: WorkflowObject = {
           value: "={{ $('get conta').item.json.link_crm_notion }}",
           mode: "url",
         },
-        title: "={{ $('Edit Fields').item.json.nome_contato }}",
+        title: '={{ $(\'Edit Fields\').item.json.nome_contato || "" }}',
         propertiesUi: {
           propertyValues: [
             {
@@ -241,6 +241,39 @@ export const rawCrmWorkflow: WorkflowObject = {
               urlValue:
                 "=http://wa.me/{{ $('Edit Fields').item.json.numero_contato }}",
             },
+            {
+              key: "entrada|rich_text",
+              textContent: '={{ $json.tracking_source || "" }}',
+            },
+            {
+              key: "plataforma anúncio|rich_text",
+              textContent: '={{ $json.tracking_platform || "" }}',
+            },
+            {
+              key: "id anúncio|rich_text",
+              textContent: '={{ $json.tracking_ad_id || "" }}',
+            },
+            {
+              key: "url anúncio|url",
+              ignoreIfEmpty: true,
+              urlValue: "={{ $json.tracking_ad_url }}",
+            },
+            {
+              key: "título anúncio|rich_text",
+              textContent: '={{ $json.tracking_ad_title || "" }}',
+            },
+            {
+              key: "descrição anúncio|rich_text",
+              textContent: '={{ $json.tracking_ad_description || "" }}',
+            },
+            {
+              key: "tipo de entrada|rich_text",
+              textContent: '={{ $json.tracking_entry_point || "" }}',
+            },
+            {
+              key: "Origem|select",
+              selectValue: '={{ $json.tracking_is_meta_ads ? "Marketing" : "" }}',
+            },
           ],
         },
         options: {},
@@ -257,7 +290,7 @@ export const rawCrmWorkflow: WorkflowObject = {
       name: "adicionar a tabela do cliente",
       type: "n8n-nodes-base.supabase",
       typeVersion: 1,
-      position: [1600, 112],
+      position: [1888, 128],
       parameters: {
         tableId: "contatos",
         fieldsUi: {
@@ -320,6 +353,76 @@ export const rawCrmWorkflow: WorkflowObject = {
         },
       },
     },
+    {
+      id: "a08647e3-cc26-4e8b-b1e9-d8d632a96f5c",
+      name: "traqueamento",
+      type: "n8n-nodes-base.set",
+      typeVersion: 3.4,
+      position: [1392, 128],
+      parameters: {
+        assignments: {
+          assignments: [
+            {
+              id: "aac4d1ac-0a28-434a-bc4a-e3e69d6eed63",
+              name: "tracking_source",
+              value:
+                '={{ $(\'Webhook\').item.json.body.message.content.contextInfo.conversionSource || "" }}',
+              type: "string",
+            },
+            {
+              id: "82e562c7-8fcc-46ee-ad7d-5a00d46318dd",
+              name: "tracking_entry_point",
+              value:
+                '={{ $(\'Webhook\').item.json.body.message.content.contextInfo.entryPointConversionSource || "" }}',
+              type: "string",
+            },
+            {
+              id: "188111ac-c54e-4f3d-9d23-38ed50971469",
+              name: "tracking_platform",
+              value:
+                "={{ $('Webhook').item.json.body.message.content.contextInfo.externalAdReply.sourceApp }}",
+              type: "string",
+            },
+            {
+              id: "98bfec1d-a183-4c2d-8bd8-b3b14d374236",
+              name: "tracking_ad_id",
+              value:
+                "={{ $('Webhook').item.json.body.message.content.contextInfo.externalAdReply.sourceID }}",
+              type: "string",
+            },
+            {
+              id: "35d6e327-3f05-44c1-ac47-d7cb324bb0a2",
+              name: "tracking_ad_url",
+              value:
+                '={{ $(\'Webhook\').item.json.body.message.content.contextInfo.externalAdReply.sourceURL || "" }}',
+              type: "string",
+            },
+            {
+              id: "95da9e5f-bb7e-49be-afd8-dbb1618d3f59",
+              name: "tracking_ad_title",
+              value:
+                '={{ $(\'Webhook\').item.json.body.message.content.contextInfo.externalAdReply.title || "" }}',
+              type: "string",
+            },
+            {
+              id: "eae407a9-32e5-46ff-9255-17c336a49020",
+              name: "tracking_ad_description",
+              value:
+                "={{ $('Webhook').item.json.body.message.content.description }}",
+              type: "string",
+            },
+            {
+              id: "6cf53c9a-c342-449e-bdff-0f5b26ffbbd4",
+              name: "tracking_is_meta_ads",
+              value:
+                "={{ $('Webhook').item.json.body?.message?.content?.contextInfo?.conversionSource === 'FB_Ads' || $('Webhook').item.json.body?.message?.content?.contextInfo?.entryPointConversionSource === 'ctwa_ad' }}",
+              type: "boolean",
+            },
+          ],
+        },
+        options: {},
+      },
+    },
   ],
   connections: {
     Webhook: {
@@ -375,6 +478,17 @@ export const rawCrmWorkflow: WorkflowObject = {
             index: 0,
           },
         ],
+        [
+          {
+            node: "traqueamento",
+            type: "main",
+            index: 0,
+          },
+        ],
+      ],
+    },
+    traqueamento: {
+      main: [
         [
           {
             node: "Create a database page",
