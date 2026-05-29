@@ -246,8 +246,8 @@ export const rawCrmWorkflow: WorkflowObject = {
               textContent: '={{ $json.tracking_source || "" }}',
             },
             {
-              key: "plataforma anúncio|rich_text",
-              textContent: '={{ $json.tracking_platform || "" }}',
+              key: "plataforma anúncio|multi_select",
+              multiSelectValue: "={{ [$json.tracking_platform] }}",
             },
             {
               key: "id anúncio|rich_text",
