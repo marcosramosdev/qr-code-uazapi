@@ -47,4 +47,19 @@ export type CrmProvisionResponse = {
 	error?: string
 }
 
+export type ClientSummary = {
+	id: string
+	nome: string
+	notionLink: string | null
+	whatsappStatus: InstanceStatus
+	qrLink: string | null
+	workflowActive: boolean | null
+}
+
+export type ClientsResponse = {
+	success: boolean
+	clients: ClientSummary[]
+	error?: string
+}
+
 
