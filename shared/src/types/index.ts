@@ -62,4 +62,10 @@ export type ClientsResponse = {
 	error?: string
 }
 
+export type DeleteClientResponse = {
+	success: boolean
+	deleted: { instance: boolean; workflow: boolean; conta: boolean }
+	error?: string
+}
+
 
