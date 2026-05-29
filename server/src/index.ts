@@ -335,7 +335,7 @@ export const app = new Hono()
         body: JSON.stringify({
           enabled: true,
           events: ["messages"],
-          excludeMessages: ["wasSentByApi", "isGroupYes"],
+          excludeMessages: ["wasSentByApi", "isGroupYes", "fromMeYes"],
           action: "add",
           url: `${webhookBase}/${slug}`,
         }),
