@@ -1,6 +1,5 @@
 import { Hono } from "hono";
-
-type InstanceStatus = "open" | "connecting" | "close" | "qr" | "unknown";
+import { type InstanceStatus, mapInstanceStatus } from "../lib/instanceStatus";
 
 type StatusResponse = {
   success: boolean;
@@ -46,25 +45,15 @@ const status = new Hono().get("/status", async (c) => {
       );
     }
 
-    const rawState: string = (
+    const rawState: string =
       data?.instance?.status ??
       data?.state ??
       data?.response ??
       data?.status ??
       data?.connectionState ??
-      "unknown"
-    ).toLowerCase();
+      "unknown";
 
-    const stateMap: Record<string, InstanceStatus> = {
-      open: "open",
-      connected: "open",
-      connecting: "connecting",
-      close: "close",
-      closed: "close",
-      disconnected: "close",
-      qr: "qr",
-    };
-    const status: InstanceStatus = stateMap[rawState] ?? "unknown";
+    const status: InstanceStatus = mapInstanceStatus(rawState);
 
     return c.json<StatusResponse>({
       success: true,

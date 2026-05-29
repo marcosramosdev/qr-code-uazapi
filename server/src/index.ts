@@ -6,13 +6,15 @@ import connect from "./routes/connect";
 import status from "./routes/status";
 import health from "./routes/health";
 import crm from "./routes/crm";
+import clients from "./routes/clients";
 
 // Sub-app com todas as rotas da API (base path /api)
 const api = new Hono()
   .route("/", connect)
   .route("/", status)
   .route("/", health)
-  .route("/crm", crm);
+  .route("/crm", crm)
+  .route("/clients", clients);
 
 export const app = new Hono()
 
