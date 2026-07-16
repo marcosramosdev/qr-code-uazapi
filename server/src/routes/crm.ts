@@ -36,7 +36,7 @@ const crm = new Hono().post("/provision", async (c) => {
     if (
       !linkNotion ||
       typeof linkNotion !== "string" ||
-      !linkNotion.includes("notion.so")
+      !(linkNotion.includes("notion.so") || linkNotion.includes("notion.com"))
     ) {
       return c.json<CrmProvisionResponse>(
         {
