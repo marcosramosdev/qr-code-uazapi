@@ -20,6 +20,10 @@ const ALL_STEPS: CrmProvisionStep[] = [
 	'n8n_workflow_activate',
 ]
 
+function isNotionLink(link: string): boolean {
+	return link.includes('notion.so') || link.includes('notion.com')
+}
+
 const STEP_LABELS: Record<CrmProvisionStep, string> = {
 	validation: 'Validação',
 	supabase_insert: 'Criar conta no banco',
@@ -37,7 +41,7 @@ function CrmProvision() {
 
 	async function handleSubmit(e: React.FormEvent) {
 		e.preventDefault()
-		if (!nome.trim() || !linkNotion.trim() || !linkNotion.includes('notion.so')) return
+		if (!nome.trim() || !linkNotion.trim() || !isNotionLink(linkNotion)) return
 
 		setLoading(true)
 		setResult(null)
@@ -115,20 +119,20 @@ function CrmProvision() {
 								type="url"
 								value={linkNotion}
 								onChange={(e) => setLinkNotion(e.target.value)}
-								placeholder="https://notion.so/..."
+								placeholder="https://notion.com/..."
 								required
 								className="w-full bg-slate-900/60 border border-slate-600 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition"
 							/>
-							{linkNotion && !linkNotion.includes('notion.so') && (
+							{linkNotion && !isNotionLink(linkNotion) && (
 								<p className="text-red-400 text-xs mt-1.5">
-									O link deve conter &ldquo;notion.so&rdquo;
+									O link deve ser uma URL do Notion
 								</p>
 							)}
 						</div>
 
 						<button
 							type="submit"
-							disabled={loading || !nome.trim() || !linkNotion.trim() || !linkNotion.includes('notion.so')}
+							disabled={loading || !nome.trim() || !linkNotion.trim() || !isNotionLink(linkNotion)}
 							className="w-full bg-blue-500 hover:bg-blue-400 active:bg-blue-600 disabled:opacity-30 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-xl transition-colors text-sm flex items-center justify-center gap-2"
 						>
 							{loading && (
