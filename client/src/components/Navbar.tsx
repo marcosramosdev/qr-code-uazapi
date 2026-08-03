@@ -24,7 +24,7 @@ function Navbar() {
               stroke="currentColor"
               strokeWidth={2}
             >
-              <title>Effect</title>
+              <title>QR code generator</title>
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
